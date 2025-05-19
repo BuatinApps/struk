@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Struk Digital - Toko Anda (Tes)</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 20px; 
+            background-color: #f4f4f4; 
+            color: #333; 
+            display: flex;
+            justify-content: center;
+        }
+        .container { 
+            background-color: #fff; 
+            padding: 20px; 
+            border-radius: 8px; 
+            box-shadow: 0 0 10px rgba(0,0,0,0.1); 
+            width: 100%;
+            max-width: 450px; 
+        }
+        h1 { text-align: center; color: #333; margin-bottom: 20px;}
+        label { display: block; margin-top: 12px; margin-bottom: 4px; font-weight: bold; }
+        input[type="text"], input[type="number"] { 
+            width: calc(100% - 22px); 
+            padding: 10px; 
+            margin-bottom: 10px; 
+            border: 1px solid #ddd; 
+            border-radius: 4px; 
+            box-sizing: border-box;
+        }
+        button { 
+            background-color: #007bff; 
+            color: white; 
+            padding: 12px 20px; 
+            border: none; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            font-size: 16px; 
+            display: block; 
+            width: 100%; 
+            margin-top: 20px; 
+            box-sizing: border-box;
+        }
+        button:hover { background-color: #0056b3; }
+        .struk-preview-container { 
+            margin-top: 25px; 
+            padding: 15px; 
+            border: 1px dashed #ccc; 
+            background-color: #f9f9f9; 
+            border-radius: 4px;
+        }
+        .struk-preview-content {
+            white-space: pre-wrap; 
+            font-family: 'Courier New', Courier, monospace; 
+            line-height: 1.5;
+            font-size: 0.9em;
+            text-align: left;
+        }
+        .whatsapp-button { 
+            background-color: #25D366; 
+            color: white; 
+            padding: 12px 20px; 
+            text-decoration: none; 
+            border-radius: 4px; 
+            display: none; /* Sembunyikan dulu, tampilkan via JS */
+            width: 100%;
+            margin-top: 15px; 
+            text-align: center;
+            font-weight: bold;
+            box-sizing: border-box;
+        }
+        .whatsapp-button:hover { background-color: #1DA851; }
+        .text-center { text-align: center; }
+        .struk-divider { border-top: 1px dashed #aaa; margin: 8px 0; }
+        .input-group { margin-bottom: 15px; }
+        .note { font-size: 0.85em; color: #555; margin-top:5px; text-align: center;}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Struk Digital (Versi Tes)</h1>
+
+        <div class="input-group">
+            <label for="namaToko">Nama Toko Anda:</label>
+            <input type="text" id="namaToko" value="TOKO BAJU ANDA KEREN">
+        </div>
+
+        <div class="input-group">
+            <label for="alamatToko">Alamat Singkat Toko:</label>
+            <input type="text" id="alamatToko" value="Jl. Sejahtera No. 123, Kotamu">
+        </div>
+
+        <div class="input-group">
+            <label for="telpToko">No. Telepon/WA Toko:</label>
+            <input type="text" id="telpToko" value="0812-3456-7890">
+        </div>
+        
+        <div class="input-group">
+            <label for="nominal">Total Pembayaran (Rp):</label>
+            <input type="number" id="nominal" placeholder="Contoh: 35000" required>
+            <p class="note">Masukkan total sesuai yang diinfokan penjual.</p>
+        </div>
+        
+        <div class="input-group">
+            <label for="nomorWAPembeli">No. WhatsApp Anda (Format 628xxxx):</label>
+            <input type="text" id="nomorWAPembeli" placeholder="Kosongkan untuk pilih kontak di WA">
+            <p class="note">Untuk dikirim ke nomor WhatsApp Anda sendiri.</p>
+        </div>
+
+        <button onclick="generateAndShowStruk()">Lihat Struk & Siapkan untuk WhatsApp</button>
+
+        <div id="strukPreviewContainer" class="struk-preview-container" style="display:none;">
+            <h2 style="margin-top:0; margin-bottom:15px; font-size: 1.2em; text-align:center;">Preview Struk</h2>
+            <div id="strukPreviewContent" class="struk-preview-content"></div>
+            <a id="linkWhatsApp" class="whatsapp-button" href="#" target="_blank">Kirim ke WhatsApp Saya</a>
+            <p class="note" style="margin-top: 10px;">Pastikan nominal sudah benar dan telah diverifikasi penjual sebelum mengirim.</p>
+        </div>
+    </div>
+
+    <script>
+        function generateAndShowStruk() {
+            // Ambil nilai dari input
+            const namaToko = document.getElementById('namaToko').value.trim() || "NAMA TOKO ANDA";
+            const alamatToko = document.getElementById('alamatToko').value.trim();
+            const telpToko = document.getElementById('telpToko').value.trim();
+            const nominalInput = document.getElementById('nominal').value;
+            const nomorWAPembeli = document.getElementById('nomorWAPembeli').value.trim();
+
+            if (!nominalInput) {
+                alert("Mohon masukkan total pembayaran terlebih dahulu.");
+                return;
+            }
+            const nominalFormatted = parseFloat(nominalInput).toLocaleString('id-ID');
+
+            // Tanggal dan Waktu Saat Ini
+            const now = new Date();
+            const tanggal = now.toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' });
+            const waktu = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', hour12: false });
+            
+            // ID Struk Sederhana (Contoh: ST202505192017XXXX)
+            const idStruk = "ST" + 
+                            now.getFullYear() +
+                            ('0' + (now.getMonth() + 1)).slice(-2) +
+                            ('0' + now.getDate()).slice(-2) +
+                            ('0' + now.getHours()).slice(-2) +
+                            ('0' + now.getMinutes()).slice(-2) +
+                            Math.floor(1000 + Math.random() * 9000);
+
+            // ----- Konten untuk Preview di Web -----
+            let strukHTML = `
+<div class="text-center"><strong>${namaToko.toUpperCase()}</strong></div>
+${alamatToko ? '<div class="text-center" style="font-size:0.9em;">' + alamatToko + '</div>' : ''}
+${telpToko ? '<div class="text-center" style="font-size:0.9em;">Telp/WA: ' + telpToko + '</div>' : ''}
+<div class="struk-divider"></div>
+Tanggal   : ${tanggal}
+Waktu     : ${waktu} WIB
+ID Struk  : ${idStruk}
+<div class="struk-divider"></div>
+DESKRIPSI BARANG:
+Pembelian Produk Toko ${namaToko}
+<div class="struk-divider"></div>
+<strong>TOTAL PEMBAYARAN: Rp ${nominalFormatted}</strong>
+<div class="struk-divider"></div>
+<div class="text-center" style="font-size:0.9em;">
+    Terima kasih telah berbelanja!
+</div>
+            `;
+            document.getElementById('strukPreviewContent').innerHTML = strukHTML;
+            document.getElementById('strukPreviewContainer').style.display = 'block';
+
+            // ----- Konten Teks untuk WhatsApp (VERSI TES SANGAT SEDERHANA) -----
+            let strukTextWA = "Ini tes pesan WhatsApp dari web."; 
+            // Baris di atas adalah PERUBAHAN untuk pengujian. Teks struk asli di-nonaktifkan sementara.
+
+            const encodedStrukText = encodeURIComponent(strukTextWA);
+            const linkWAElement = document.getElementById('linkWhatsApp');
+            
+            let waLink = `https://wa.me/`;
+            // Jika nomor WA pembeli diisi dan valid (minimal 9 digit angka, bisa diawali 62 atau 0)
+            if (nomorWAPembeli && /^(0|62)\d{8,15}$/.test(nomorWAPembeli)) {
+                let formattedNomorWA = nomorWAPembeli;
+                if (nomorWAPembeli.startsWith('0')) {
+                    formattedNomorWA = '62' + nomorWAPembeli.substring(1);
+                }
+                waLink += `${formattedNomorWA}?text=${encodedStrukText}`;
+            } else {
+                // Jika tidak ada nomor WA pembeli, atau tidak valid, buka WhatsApp untuk memilih kontak
+                waLink += `?text=${encodedStrukText}`;
+            }
+
+            // Untuk Debugging: Cetak link ke konsol
+            console.log("Link WhatsApp yang Dihasilkan:", waLink);
+            console.log("Teks Asli untuk WhatsApp:", strukTextWA);
+            console.log("Teks yang Sudah Di-encode:", encodedStrukText);
+
+
+            linkWAElement.href = waLink;
+            linkWAElement.style.display = 'block'; // Tampilkan tombol WhatsApp
+        }
+    </script>
+</body>
+</html>
