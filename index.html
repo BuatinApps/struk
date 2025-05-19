@@ -21,17 +21,17 @@
         <div class="space-y-5">
             <div>
                 <label for="namaToko" class="block text-sm font-medium text-slate-600 mb-1">Nama Toko Anda:</label>
-                <input type="text" id="namaToko" value="TOKO BAJU ANDA KEREN" class="mt-1 block w-full px-4 py-2.5 bg-white border border-slate-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                <input type="text" id="namaToko" value="TAYO" class="mt-1 block w-full px-4 py-2.5 bg-white border border-slate-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
             </div>
 
             <div>
                 <label for="alamatToko" class="block text-sm font-medium text-slate-600 mb-1">Alamat Singkat Toko:</label>
-                <input type="text" id="alamatToko" value="Jl. Sejahtera No. 123, Kotamu" class="mt-1 block w-full px-4 py-2.5 bg-white border border-slate-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                <input type="text" id="alamatToko" value="Jl. Cengkeh taman kota intan, jakarta barat 11110" class="mt-1 block w-full px-4 py-2.5 bg-white border border-slate-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
             </div>
 
             <div>
                 <label for="telpToko" class="block text-sm font-medium text-slate-600 mb-1">No. Telepon/WA Toko (Tampil di Struk):</label>
-                <input type="text" id="telpToko" value="0812-3456-7890" class="mt-1 block w-full px-4 py-2.5 bg-white border border-slate-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                <input type="text" id="telpToko" value="085156455878" class="mt-1 block w-full px-4 py-2.5 bg-white border border-slate-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
             </div>
             
             <div>
@@ -39,7 +39,17 @@
                 <input type="number" id="nominal" placeholder="Contoh: 35000" required class="mt-1 block w-full px-4 py-2.5 bg-white border border-slate-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
                 <p class="text-xs text-slate-500 mt-1">Masukkan total sesuai yang diinfokan penjual.</p>
             </div>
-        </div>
+
+            <div>
+                <label for="metodePembayaran" class="block text-sm font-medium text-slate-600 mb-1">Metode Pembayaran:</label>
+                <select id="metodePembayaran" class="mt-1 block w-full px-4 py-2.5 bg-white border border-slate-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                    <option value="Cash">Cash</option>
+                    <option value="Transfer">Transfer</option>
+                    <option value="QRIS">QRIS</option> 
+                    <option value="Lainnya">Lainnya</option> 
+                </select>
+            </div>
+            </div>
 
         <button onclick="generateAndShowStruk()" class="w-full mt-8 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-150 ease-in-out">
             Lihat Struk & Siapkan untuk WhatsApp
@@ -62,6 +72,7 @@
             const alamatToko = document.getElementById('alamatToko').value.trim();
             const telpToko = document.getElementById('telpToko').value.trim(); // Ini nomor yang tampil di struk
             const nominalInput = document.getElementById('nominal').value;
+            const metodePembayaran = document.getElementById('metodePembayaran').value; // Ambil nilai metode pembayaran
 
             if (!nominalInput) {
                 alert("Mohon masukkan total pembayaran terlebih dahulu.");
@@ -81,6 +92,10 @@
                             ('0' + now.getMinutes()).slice(-2) +
                             Math.floor(1000 + Math.random() * 9000);
 
+            // === PERUBAHAN DESKRIPSI BARANG DI SINI ===
+            const deskripsiBarangCustom = "Pembelian produk: kaos oleh-oleh jakarta, kaos distro, celana, setelan anak.";
+
+            // Konten untuk Preview di Web
             let strukHTML = `
 <div class="text-center"><strong>${namaToko.toUpperCase()}</strong></div>
 ${alamatToko ? '<div class="text-center text-xs text-slate-600">' + alamatToko + '</div>' : ''}
@@ -89,9 +104,10 @@ ${telpToko ? '<div class="text-center text-xs text-slate-600">Telp/WA: ' + telpT
 Tanggal   : ${tanggal}
 Waktu     : ${waktu} WIB
 ID Struk  : ${idStruk}
+Metode Bayar: ${metodePembayaran} 
 <hr class="my-2 border-dashed border-slate-300">
-DESKRIPSI BARANG:
-Pembelian Produk Toko ${namaToko}
+DESKRIPSI:
+${deskripsiBarangCustom}
 <hr class="my-2 border-dashed border-slate-300">
 <strong class="text-lg">TOTAL PEMBAYARAN: Rp ${nominalFormatted}</strong>
 <hr class="my-2 border-dashed border-slate-300">
@@ -101,29 +117,32 @@ Pembelian Produk Toko ${namaToko}
             document.getElementById('strukPreviewContent').innerHTML = strukHTML;
             document.getElementById('strukPreviewContainer').style.display = 'block';
 
-            let strukTextWA = `🧾 *KONFIRMASI PEMBELIAN* 🧾\n\n`; // Judul diubah sedikit
+            // Konten Teks untuk WhatsApp
+            let strukTextWA = `🧾 *KONFIRMASI PEMBELIAN* 🧾\n\n`;
             strukTextWA += `Dari Toko: *${namaToko.toUpperCase()}*\n`;
-            if (telpToko) strukTextWA += `(Kontak Toko: ${telpToko})\n`; // Nomor kontak toko Anda
+            if (telpToko) strukTextWA += `(Kontak Toko: ${telpToko})\n`;
             strukTextWA += `-----------------------------------\n`;
             strukTextWA += `Tanggal: ${tanggal}, ${waktu} WIB\n`;
-            strukTextWA += `ID Transaksi Web: ${idStruk}\n`; // ID dari web app
+            strukTextWA += `ID Transaksi Web: ${idStruk}\n`;
+            strukTextWA += `Metode Bayar: ${metodePembayaran}\n`; // Tambahkan metode pembayaran
             strukTextWA += `-----------------------------------\n`;
-            strukTextWA += `Nominal yang dikonfirmasi: *Rp ${nominalFormatted}*\n`; // Fokus pada nominal
+            // === PERUBAHAN DESKRIPSI BARANG DI SINI (untuk WhatsApp) ===
+            strukTextWA += `Deskripsi:\n${deskripsiBarangCustom}\n`;
+            strukTextWA += `-----------------------------------\n`;
+            strukTextWA += `Nominal yang dikonfirmasi: *Rp ${nominalFormatted}*\n`;
             strukTextWA += `-----------------------------------\n`;
             strukTextWA += `Mohon diproses.\n\n`;
-            strukTextWA += `*Catatan untuk Pembeli: Pesan ini akan dikirim ke Penjual. Pastikan nominal sudah diverifikasi.*`;
+            strukTextWA += `*Catatan untuk Pembeli: Pesan ini akan dikirim ke Penjual. Pastikan semua data sudah diverifikasi.*`;
 
             const encodedStrukText = encodeURIComponent(strukTextWA);
             const linkWAElement = document.getElementById('linkWhatsApp');
             
-            // --- PERUBAHAN DI SINI ---
-            const nomorTujuanPenjual = '6285156455878'; // Nomor Anda, pastikan format 62xxxx
+            const nomorTujuanPenjual = '6285156455878'; 
             let waLink = `https://wa.me/${nomorTujuanPenjual}?text=${encodedStrukText}`;
-            // --- AKHIR PERUBAHAN ---
             
             console.log("Link WhatsApp yang Dihasilkan (ke Penjual):", waLink);
             linkWAElement.href = waLink;
-            linkWAElement.innerHTML = "Kirim Konfirmasi ke Penjual"; // Teks tombol disesuaikan
+            linkWAElement.innerHTML = "Kirim Konfirmasi ke Penjual"; 
             linkWAElement.style.display = 'block';
         }
     </script>
