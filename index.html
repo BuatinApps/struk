@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Struk Digital - Toko Anda (Tes)</title>
+    <title>Struk Digital - Toko Anda</title>
     <style>
         body { 
             font-family: Arial, sans-serif; 
@@ -81,7 +81,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>Struk Digital (Versi Tes)</h1>
+        <h1>Struk Digital</h1>
 
         <div class="input-group">
             <label for="namaToko">Nama Toko Anda:</label>
@@ -171,9 +171,21 @@ Pembelian Produk Toko ${namaToko}
             document.getElementById('strukPreviewContent').innerHTML = strukHTML;
             document.getElementById('strukPreviewContainer').style.display = 'block';
 
-            // ----- Konten Teks untuk WhatsApp (VERSI TES SANGAT SEDERHANA) -----
-            let strukTextWA = "Ini tes pesan WhatsApp dari web."; 
-            // Baris di atas adalah PERUBAHAN untuk pengujian. Teks struk asli di-nonaktifkan sementara.
+            // ----- Konten Teks untuk WhatsApp (Versi Detail Dikembalikan dan DIPERBAIKI) -----
+            let strukTextWA = `🧾 *STRUK PEMBELIAN DIGITAL* 🧾\n\n`;
+            strukTextWA += `*${namaToko.toUpperCase()}*\n`;
+            if (alamatToko) strukTextWA += `${alamatToko}\n`;
+            if (telpToko) strukTextWA += `Telp/WA: ${telpToko}\n`;
+            strukTextWA += `-----------------------------------\n`;
+            strukTextWA += `Tanggal: ${tanggal}, ${waktu} WIB\n`;
+            strukTextWA += `ID Struk: ${idStruk}\n`;
+            strukTextWA += `-----------------------------------\n`;
+            strukTextWA += `Deskripsi: Pembelian Produk Toko\n`;
+            strukTextWA += `*TOTAL: Rp ${nominalFormatted}*\n`;
+            strukTextWA += `-----------------------------------\n`;
+            strukTextWA += `Terima kasih telah berbelanja! 🙏\n`;
+            strukTextWA += `_Mohon simpan struk ini._\n\n`;
+            strukTextWA += `*PENTING: Pastikan nominal sudah diverifikasi oleh penjual sebelum Anda mengirim pesan ini.*`;
 
             const encodedStrukText = encodeURIComponent(strukTextWA);
             const linkWAElement = document.getElementById('linkWhatsApp');
@@ -193,8 +205,8 @@ Pembelian Produk Toko ${namaToko}
 
             // Untuk Debugging: Cetak link ke konsol
             console.log("Link WhatsApp yang Dihasilkan:", waLink);
-            console.log("Teks Asli untuk WhatsApp:", strukTextWA);
-            console.log("Teks yang Sudah Di-encode:", encodedStrukText);
+            // console.log("Teks Asli untuk WhatsApp:", strukTextWA); // Bisa diaktifkan jika perlu
+            // console.log("Teks yang Sudah Di-encode:", encodedStrukText); // Bisa diaktifkan jika perlu
 
 
             linkWAElement.href = waLink;
